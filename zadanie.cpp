@@ -1,87 +1,75 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
-#include "stdlib.h"
-#include "time.h"
-#include "iostream"
-#include "conio.h"
-#include "ctime"
-using namespace std;
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <conio.h>
+#include <time.h>
+#include <stack>
+#include <queue>
 
 using namespace std;
+int i, j, m;
+bool* visited = new bool[m];
+int** graph;
 
-const int n = 4;
-const int m = 4;
 
-int iArr[n][m] = { 0, 0, 1, 0,
-0, 1, 1, 0,
-1, 0, 0, 1,
-1, 0, 0, 1 };
-
-bool used[n];
-
-int j = 0;
-int r = 0;
-int i = 0;
-int k = 0;
-
-void dfs(int t) {
-
-	used[t] = true;
-
-	int p;
-
-	for (i = k; i < n; i++) //Выбрать из непройденных вершин вершину с наименьшим номером. Если непройденных вершин нет, закончить работу – конец алгоритма.
-	{
-		j = r;
-		if ((iArr[i][j] != 0) && (!used[i])) //Пройти выбранную вершину и отметить её в массиве пометок как пройденную (реализуется циклом по столбцу)
-		{
-			used[i] = true;
-			p = i;
-
-			printf("%d ", i);
-
-			for (j = 0; j < m; j++)
-			{
-				i == p;
-				if (iArr[i][j] != 0)
-				{
-					r = j;
-
-					for (k = 0; k < n; k++)
-					{
-						j == r;
-
-						if ((iArr[k][j] != 0) && (!used[k]))// ищем ребро, через которое можно попасть в еще непройденную вершину
-						{
-							dfs(i);
-						}
-					}
-				}
-			}
-		}
-	}
+void DFS(int st)
+{
+	int r;
+	printf("%d ", st + 1);
+	visited[st] = true;
+	for (r = 0; r <= m; r++)
+		if ((graph[st][r] != 0) && (!visited[r]))
+			DFS(r);
 }
 
-int main()
+
+void DFS_main()
 {
 	setlocale(LC_ALL, "Rus");
+	printf("Введите размерность матрицы: ");
+	scanf_s("%d", &m);
 
-	for (int i = 0; i < n; i++)
-	{
-		used[i] = false; //всем вершинам присваивается значение "непосещенная"
-		for (int j = 0; j < m; j++)
-			printf("%d ", iArr[i][j]);
-		printf("\n");
+	graph = new int* [m];
+	for (int i = 0; i < m; i++) {
+		graph[i] = new int[m];
 	}
 
-	int from;
-	printf("\nНапишите номер вершины: ");
-	scanf_s("%d", &from);
+	int start;
+	printf("Матрица смежности:\n");
+	srand(time(NULL));
+	for (i = 0; i < m; ++i)
+		for (j = i; j < m; ++j) {
+			graph[i][j] = graph[j][i] = rand() % 2;
+			graph[i][i] = graph[j][j] = 0; // чтобы петля(узел) не создавалась
+		}
+	printf("");
 
-	printf("\nРебра: \n");
+	for (i = 0; i < m; ++i)
+	{
+		visited[i] = false;
+		for (j = 0; j < m; ++j)
+			printf("%4d ", graph[i][j]); // сама матрица
+		printf("\n\n");
+	}
 
-	dfs(from);
 
-	printf("\n");
+	printf("\nВведите вершину: ");
+	scanf_s("%d", &start);
+	while (start > m) {
+		printf("\nТакая вершина не существует!\n");
+		printf("\nВведи вершину: ");
+		scanf_s("%d", &start);
+	}
 
-	return 0;
+	bool* vis = new bool[m];
+
+
+	printf("\nПорядок обхода(рекурсия):    ");
+	DFS(start - 1);
+
+	system("pause");
+}
+
+void main(void)
+{
+	DFS_main();
 }
